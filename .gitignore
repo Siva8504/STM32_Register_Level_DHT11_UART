@@ -1,0 +1,15 @@
+# Build folders
+Debug/
+Release/
+
+# Object files
+*.o
+*.d
+
+# Executables
+*.elf
+*.bin
+*.hex
+
+# Temporary files
+*.map
