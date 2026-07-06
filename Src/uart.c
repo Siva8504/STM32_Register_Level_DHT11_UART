@@ -74,3 +74,35 @@ char UART2_ReadChar(void)
     return *pUSART2DR;
 }
 
+void UART2_SendNumber(uint32_t num)
+{
+    char buffer[10];
+
+    uint8_t digit;
+
+    uint8_t index = 0;
+
+    int8_t i;
+
+    if(num == 0)
+    {
+        UART2_SendChar('0');
+        return;
+    }
+
+    while(num > 0)
+    {
+        digit = num % 10;
+
+        buffer[index] = digit + '0';
+
+        index++;
+
+        num = num / 10;
+    }
+
+    for(i = index - 1; i >= 0; i--)
+    {
+        UART2_SendChar(buffer[i]);
+    }
+}

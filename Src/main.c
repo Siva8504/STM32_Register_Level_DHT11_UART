@@ -61,17 +61,15 @@ int main(void)
 
                 UART2_SendString("Temperature : ");
 
-                    UART2_SendChar((temperature/10)+'0');
-                    UART2_SendChar((temperature%10)+'0');
+                UART2_SendNumber(temperature);
 
-                    UART2_SendString(" C\r\n");
+                UART2_SendString(" C\r\n");
 
-                    UART2_SendString("Humidity : ");
+                UART2_SendString("Humidity : ");
 
-                    UART2_SendChar((humidity/10)+'0');
-                    UART2_SendChar((humidity%10)+'0');
+                UART2_SendNumber(humidity);
 
-                    UART2_SendString(" %\r\n\r\n");
+                UART2_SendString(" %\r\n\r\n");
 
                     delay_ms(1000);
             }

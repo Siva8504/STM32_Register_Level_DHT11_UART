@@ -17,6 +17,8 @@ void UART2_SendChar(char ch);
 
 void UART2_SendString(char *str);
 
+void UART2_SendNumber(uint32_t num);
+
 char UART2_ReadChar(void);
 
 
