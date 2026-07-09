@@ -1,5 +1,5 @@
 #include <stdint.h>
-
+#include "dht11.h"
 
 volatile uint32_t *pAHB1ENR   = (uint32_t*)0x40023830;
 
@@ -13,30 +13,6 @@ volatile uint32_t *pTIM2CR1 = (uint32_t*)0x40000000;
 volatile uint32_t *pTIM2CNT = (uint32_t*)0x40000024;
 volatile uint32_t *pTIM2PSC = (uint32_t*)0x40000028;
 volatile uint32_t *pTIM2ARR = (uint32_t*)0x4000002C;
-
-volatile uint32_t timer_value = 0;
-
-volatile uint8_t status = 0;
-volatile uint8_t Rh_byte1 = 0;
-volatile uint8_t Rh_byte2 = 0;
-
-volatile uint8_t Temp_byte1 = 0;
-volatile uint8_t Temp_byte2 = 0;
-
-volatile uint8_t Checksum = 0;
-
-volatile uint32_t test_cnt = 0;
-
-volatile uint32_t pulse_width = 0;
-volatile uint8_t byte_value = 0;
-
-
-volatile uint8_t calculated_checksum = 0;
-
-volatile uint8_t humidity = 0;
-volatile uint8_t temperature = 0;
-
-volatile uint32_t loop_count = 0;
 
 #define DHT_THRESHOLD 682
 
@@ -115,6 +91,7 @@ uint8_t DHT11_Response(void)
 
 uint8_t DHT11_ReadBit(void)
 {
+	uint32_t pulse_width;
     while((*pGPIOAIDR & (1<<6))){
 
     }
@@ -141,7 +118,6 @@ uint8_t DHT11_ReadBit(void)
 uint8_t DHT11_ReadByte(void)
 {
     uint8_t data = 0;
-
     uint8_t i;
 
     for(i=0;i<8;i++)
@@ -152,4 +128,45 @@ uint8_t DHT11_ReadByte(void)
     }
 
     return data;
+}
+
+uint8_t DHT11_ReadData(DHT11_Data *sensor)
+{
+	uint8_t status;
+	uint8_t Rh_byte1;
+	uint8_t Rh_byte2;
+	uint8_t Temp_byte1;
+	uint8_t Temp_byte2;
+	uint8_t Checksum;
+	uint8_t calculated_checksum;
+
+	DHT11_Start();
+    status = DHT11_Response();
+
+    if (status)
+    {
+        Rh_byte1 = DHT11_ReadByte();
+
+        Rh_byte2 = DHT11_ReadByte();
+
+        Temp_byte1 = DHT11_ReadByte();
+
+        Temp_byte2 = DHT11_ReadByte();
+
+        Checksum = DHT11_ReadByte();
+
+        calculated_checksum =
+            Rh_byte1 + Rh_byte2 + Temp_byte1 + Temp_byte2;
+
+        if(calculated_checksum == Checksum)
+        {
+            sensor->temperature = Temp_byte1;
+
+            sensor->humidity = Rh_byte1;
+
+            return 1;
+        }
+    }
+
+    return 0;
 }

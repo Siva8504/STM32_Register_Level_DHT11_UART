@@ -30,50 +30,28 @@ int main(void)
 
  UART2_Init(115200);
 
+ DHT11_Data sensor;
+
     while(1)
     {
-        DHT11_Start();
+    	if(DHT11_ReadData(&sensor))
+    	{
+    	    UART2_SendString("Temperature : ");
 
-        status = DHT11_Response();
+    	    UART2_SendNumber(sensor.temperature);
+
+    	    UART2_SendString(" C\r\n");
+
+    	    UART2_SendString("Humidity : ");
+
+    	    UART2_SendNumber(sensor.humidity);
+
+    	    UART2_SendString(" %\r\n\r\n");
+
+    	    delay_ms(1000);
+    	}
 
 
-
-        if(status)
-        {
-            Rh_byte1   = DHT11_ReadByte();
-
-            Rh_byte2   = DHT11_ReadByte();
-
-            Temp_byte1 = DHT11_ReadByte();
-
-            Temp_byte2 = DHT11_ReadByte();
-
-            Checksum   = DHT11_ReadByte();
-
-            calculated_checksum =
-                                  Rh_byte1 + Rh_byte2 + Temp_byte1 + Temp_byte2;
-
-            if(calculated_checksum == Checksum)
-            {
-                humidity    = Rh_byte1;
-
-                temperature = Temp_byte1;
-
-                UART2_SendString("Temperature : ");
-
-                UART2_SendNumber(temperature);
-
-                UART2_SendString(" C\r\n");
-
-                UART2_SendString("Humidity : ");
-
-                UART2_SendNumber(humidity);
-
-                UART2_SendString(" %\r\n\r\n");
-
-                    delay_ms(1000);
-            }
-        }
     }
 
 }
