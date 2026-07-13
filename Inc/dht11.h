@@ -11,9 +11,6 @@ typedef struct
 
 extern volatile uint32_t *pAHB1ENR ;
 
-
-//#define DHT_THRESHOLD 682
-
 void TIM2_Init(void);
 
 void delay_us(uint32_t us);

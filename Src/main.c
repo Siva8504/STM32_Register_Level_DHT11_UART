@@ -21,6 +21,7 @@
 #include <stdint.h>
 #include "uart.h"
 #include "dht11.h"
+#include "display.h"
 
 int main(void)
 {
@@ -36,18 +37,7 @@ int main(void)
     {
     	if(DHT11_ReadData(&sensor))
     	{
-    	    UART2_SendString("Temperature : ");
-
-    	    UART2_SendNumber(sensor.temperature);
-
-    	    UART2_SendString(" C\r\n");
-
-    	    UART2_SendString("Humidity : ");
-
-    	    UART2_SendNumber(sensor.humidity);
-
-    	    UART2_SendString(" %\r\n\r\n");
-
+    		DisplaySensorData(&sensor);
     	    delay_ms(1000);
     	}
 
