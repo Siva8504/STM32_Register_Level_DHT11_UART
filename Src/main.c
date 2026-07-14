@@ -30,19 +30,35 @@ int main(void)
  TIM2_Init();
 
  UART2_Init(115200);
-
  DHT11_Data sensor;
+ DHT11_Status status;
 
-    while(1)
-    {
-    	if(DHT11_ReadData(&sensor))
-    	{
-    		DisplaySensorData(&sensor);
-    	    delay_ms(1000);
-    	}
+ while(1)
+ {
+     status = DHT11_ReadData(&sensor);
 
+     switch(status)
+     {
+         case DHT11_OK:
+             DisplaySensorData(&sensor);
+             break;
 
-    }
+         case DHT11_ERROR_NO_RESPONSE:
+             UART2_SendString("Error: No Response\r\n");
+             break;
+
+         case DHT11_ERROR_CHECKSUM:
+             UART2_SendString("Error: Checksum Failed\r\n");
+             break;
+
+         default:
+             UART2_SendString("Unknown Error\r\n");
+             break;
+     }
+
+     delay_ms(1000);
+ }
+
 
 }
 

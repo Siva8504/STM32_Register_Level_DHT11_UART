@@ -130,7 +130,7 @@ uint8_t DHT11_ReadByte(void)
     return data;
 }
 
-uint8_t DHT11_ReadData(DHT11_Data *sensor)
+DHT11_Status DHT11_ReadData(DHT11_Data *sensor)
 {
 	uint8_t status;
 	uint8_t Rh_byte1;
@@ -143,16 +143,12 @@ uint8_t DHT11_ReadData(DHT11_Data *sensor)
 	DHT11_Start();
     status = DHT11_Response();
 
-    if (status)
+    if(status)
     {
         Rh_byte1 = DHT11_ReadByte();
-
         Rh_byte2 = DHT11_ReadByte();
-
         Temp_byte1 = DHT11_ReadByte();
-
         Temp_byte2 = DHT11_ReadByte();
-
         Checksum = DHT11_ReadByte();
 
         calculated_checksum =
@@ -161,12 +157,13 @@ uint8_t DHT11_ReadData(DHT11_Data *sensor)
         if(calculated_checksum == Checksum)
         {
             sensor->temperature = Temp_byte1;
-
             sensor->humidity = Rh_byte1;
 
-            return 1;
+            return DHT11_OK;
         }
+
+        return DHT11_ERROR_CHECKSUM;
     }
 
-    return 0;
+    return DHT11_ERROR_NO_RESPONSE;
 }

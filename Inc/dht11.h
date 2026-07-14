@@ -3,6 +3,15 @@
 
 #include <stdint.h>
 
+typedef enum
+{
+    DHT11_OK = 0,
+    DHT11_ERROR_NO_RESPONSE,
+    DHT11_ERROR_TIMEOUT,
+    DHT11_ERROR_CHECKSUM
+} DHT11_Status;
+
+
 typedef struct
 {
     uint8_t temperature;
@@ -25,7 +34,7 @@ uint8_t DHT11_ReadBit(void);
 
 uint8_t DHT11_ReadByte(void);
 
-uint8_t DHT11_ReadData(DHT11_Data *sensor);
+DHT11_Status DHT11_ReadData(DHT11_Data *sensor);
 
 
 #endif
